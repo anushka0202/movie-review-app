@@ -63,9 +63,9 @@ const MoviePage = ({ movieId }: { movieId: number }) => {
     setIsAddReviewModalOpen(true);
   };
 
-   const handleAddMovie = () => {
-     setIsAddMovieModalOpen(true);
-   };
+  const handleAddMovie = () => {
+    setIsAddMovieModalOpen(true);
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -74,6 +74,8 @@ const MoviePage = ({ movieId }: { movieId: number }) => {
   if (!movie) {
     return <div>Movie not found.</div>; // Handle case where movie is not found
   }
+
+  console.log('movie', movie);
 
   return (
     <Layout onAddMovie={handleAddMovie} onAddReview={handleAddReview}>
@@ -87,7 +89,7 @@ const MoviePage = ({ movieId }: { movieId: number }) => {
               {movie.averageRating?.toFixed(2) || "N/A"}
             </p>
           </div>
-          <h2 className="text-2xl font-bold mb-2">Reviews</h2>
+
           <ReviewList reviews={reviews} onDeleteReview={handleDeleteReview} />
         </div>
       )}

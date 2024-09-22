@@ -12,5 +12,5 @@ export async function GET(
   const movie = await prisma.movie.findMany({
     where: { id: Number(id) },
   });
-  return NextResponse.json(movie);
+  return NextResponse.json(movie[0]);
 }
