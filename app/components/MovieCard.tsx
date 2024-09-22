@@ -14,11 +14,11 @@ const MovieCard: React.FC<MovieCardProps> = ({
 }) => {
   return (
     <div
-      className="bg-purple-100 p-4 rounded-lg shadow cursor-pointer"
+      className="bg-purple-100 p-4 shadow cursor-pointer"
       onClick={() => onMovieClick(movie.id)}
     >
-      <h2 className="text-xl font-semibold mb-2">{movie.name}</h2>
-      <p className="text-sm text-gray-600 mb-2">
+      <h2 className="text-xl font-semibold mb-2 text-gray-600">{movie.name}</h2>
+      <p className="text-base text-gray-600 mb-2 italic">
         Released: {new Date(movie.releaseDate).toLocaleDateString()}
       </p>
       <p className="text-lg font-bold mb-2">

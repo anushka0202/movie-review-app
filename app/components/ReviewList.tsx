@@ -10,7 +10,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ reviews, onDeleteReview }) => {
   return (
     <div className="space-y-4">
       {reviews.map((review) => (
-        <div key={review.id} className="bg-white p-4 rounded-lg shadow">
+        <div key={review.id} className="bg-white p-4 border border-gray-300">
           <div className="flex justify-between mb-2">
             <p className="font-bold">{review.comment}</p>
             <p className="text-lg font-bold text-purple-700">

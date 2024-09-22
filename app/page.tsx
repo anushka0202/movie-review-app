@@ -37,7 +37,6 @@ export default function Home() {
     router.push(`/movies/${movieId}`);
   };
 
-
   const handleDeleteMovie = async (movieId: number) => {
     await deleteMovie(movieId);
     fetchMovies();
@@ -49,7 +48,7 @@ export default function Home() {
       onAddReview={() => setIsAddReviewModalOpen(true)}
     >
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-4">
+        <h1 className="text-3xl font-semibold mb-4 text-gray-600">
           The best movie reviews site!
         </h1>
         <SearchBar onSearch={handleSearch} />
