@@ -25,7 +25,7 @@ export async function DELETE(req: Request) {
   await prisma.movie.delete({
     where: { id: Number(id) },
   });
-  return NextResponse.json(null, { status: 204 });
+  return NextResponse.json(null, { status: 200 });
 }
 
 // PUT method - update movie

@@ -22,8 +22,8 @@ const MovieCard: React.FC<MovieCardProps> = ({
         Released: {new Date(movie.releaseDate).toLocaleDateString()}
       </p>
       <p className="text-lg font-bold mb-2">
-        Rating: {movie.averageRating ? movie.averageRating.toFixed(2) : "N/A"}
-        /10
+        Rating:{" "}
+        {movie.averageRating ? movie.averageRating.toFixed(2) + "/10" : "N/A"}
       </p>
       <div className="flex justify-end">
         <button
