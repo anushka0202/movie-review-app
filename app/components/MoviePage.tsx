@@ -29,7 +29,6 @@ const MoviePage = ({ movieId }: { movieId: number }) => {
   const fetchMovie = async () => {
     try {
       const fetchedMovie = await getMovie(movieId);
-      console.log("Fetched movie:", fetchedMovie);
       setMovie(fetchedMovie);
     } catch (error) {
       console.error("Error fetching movie:", error);
