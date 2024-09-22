@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Movie } from "./types";
-import { deleteMovie, getMovies } from "../lib/api";
+import { deleteMovie, getMovies, updateMovie } from "../lib/api";
 import Layout from "./components/Layout";
 import MovieList from "./components/MovieList";
 import SearchBar from "./components/SearchBar";
@@ -15,6 +15,7 @@ export default function Home() {
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
   const [isAddMovieModalOpen, setIsAddMovieModalOpen] = useState(false);
   const [isAddReviewModalOpen, setIsAddReviewModalOpen] = useState(false);
+  const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
 
   useEffect(() => {
     fetchMovies();
@@ -38,13 +39,30 @@ export default function Home() {
   };
 
   const handleDeleteMovie = async (movieId: number) => {
-    await deleteMovie(movieId);
-    fetchMovies();
+     try {
+       await deleteMovie(movieId);
+       alert("Movie deleted successfully.");
+       window.location.reload();
+     } catch (error) {
+       console.error("Error deleting movie:", error);
+     };
   };
+
+   const handleUpdateMovie = (movie: Movie) => {
+     if (movie) {
+       setMovieToEdit(movie); // Set the movie to edit
+       setIsAddMovieModalOpen(true); // Open the modal for editing
+     }
+   };
+
+   const handleAddNewMovie = () => {
+     setMovieToEdit(null); // Ensure no movie is selected (for adding a new movie)
+     setIsAddMovieModalOpen(true); // Open the modal for adding a movie
+   };
 
   return (
     <Layout
-      onAddMovie={() => setIsAddMovieModalOpen(true)}
+      onAddMovie={handleAddNewMovie}
       onAddReview={() => setIsAddReviewModalOpen(true)}
     >
       <div className="container mx-auto px-4">
@@ -56,12 +74,14 @@ export default function Home() {
           movies={filteredMovies}
           onMovieClick={handleMovieClick}
           onDeleteMovie={handleDeleteMovie}
+          onUpdateMovie={handleUpdateMovie}
         />
       </div>
       {isAddMovieModalOpen && (
         <AddMovieModal
           onClose={() => setIsAddMovieModalOpen(false)}
           onMovieAdded={fetchMovies}
+          movieToEdit={movieToEdit}
         />
       )}
       {isAddReviewModalOpen && (

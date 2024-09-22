@@ -1,31 +1,57 @@
-import React, { useState } from 'react'
-import { Movie } from '../types'
-import { addReview } from '../../lib/api'
+import React, { useState, useEffect } from "react";
+import { Movie, Review } from "../types";
+import { addReview, updateReview } from "../../lib/api";
 
 interface AddReviewModalProps {
-  onClose: () => void
-  onReviewAdded: () => void
-  movies: Movie[]
+  onClose: () => void;
+  onReviewAdded: () => void;
+  movies: Movie[];
+  reviewToEdit?: Review | null; 
 }
 
 const AddReviewModal: React.FC<AddReviewModalProps> = ({
   onClose,
   onReviewAdded,
   movies,
+  reviewToEdit, 
 }) => {
   const [selectedMovie, setSelectedMovie] = useState("");
   const [reviewer, setReviewer] = useState("");
   const [rating, setRating] = useState("");
   const [comment, setComment] = useState("");
 
+  useEffect(() => {
+    if (reviewToEdit) {
+      setSelectedMovie(reviewToEdit.movieId.toString());
+      setReviewer(reviewToEdit.reviewer);
+      setRating(reviewToEdit.rating.toString());
+      setComment(reviewToEdit.comment);
+    } else {
+      // Reset fields when adding a new review
+      setSelectedMovie("");
+      setReviewer("");
+      setRating("");
+      setComment("");
+    }
+  }, [reviewToEdit]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await addReview({
+    const reviewData = {
       movieId: parseInt(selectedMovie),
       reviewer,
       rating: parseInt(rating),
       comment,
-    });
+    };
+
+    if (reviewToEdit) {
+      // Update existing review
+      await updateReview(reviewToEdit.id, reviewData);
+    } else {
+      // Add a new review
+      await addReview(reviewData);
+    }
+
     onReviewAdded();
     onClose();
   };
@@ -33,7 +59,9 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">Add new review</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          {reviewToEdit ? "Edit review" : "Add new review"}
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
@@ -47,6 +75,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
               value={selectedMovie}
               onChange={(e) => setSelectedMovie(e.target.value)}
               className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50"
+              disabled={!!reviewToEdit} // Disable dropdown when editing
               required
             >
               <option value="">Select a movie</option>
@@ -119,7 +148,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
             >
-              Add review
+              {reviewToEdit ? "Update review" : "Add review"}
             </button>
           </div>
         </form>

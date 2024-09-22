@@ -2,7 +2,7 @@
 import MoviePage from "@/app/components/MoviePage";
 
 export default function MovieDetail({ params }: { params: { id: string } }) {
-  const { id } = params; // Get the movie ID from the URL
+  const { id } = params; 
 
   return (
     <div>

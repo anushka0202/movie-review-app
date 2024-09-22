@@ -11,8 +11,9 @@ const MoviePage = ({ movieId }: { movieId: number }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isAddMovieModalOpen, setIsAddMovieModalOpen] = useState(false);
   const [isAddReviewModalOpen, setIsAddReviewModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [reviewToEdit, setReviewToEdit] = useState<Review | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,7 +21,7 @@ const MoviePage = ({ movieId }: { movieId: number }) => {
         await fetchMovie();
         await fetchReviews();
         await fetchMovies();
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
     fetchData();
@@ -52,15 +53,23 @@ const MoviePage = ({ movieId }: { movieId: number }) => {
   const handleDeleteReview = async (reviewId: number) => {
     try {
       await deleteReview(reviewId);
-      fetchReviews();
-      fetchMovie(); // Refetch movie to update average rating
+      alert("Review deleted successfully.");
+      window.location.reload();
     } catch (error) {
       console.error("Error deleting review:", error);
     }
   };
 
   const handleAddReview = () => {
+    setReviewToEdit(null);
     setIsAddReviewModalOpen(true);
+  };
+
+  const handleUpdateReview = (review: Review) => {
+    if (review) {
+      setReviewToEdit(review); // Set the review to edit
+      setIsAddReviewModalOpen(true); // Open the modal for editing
+    }
   };
 
   const handleAddMovie = () => {
@@ -68,34 +77,49 @@ const MoviePage = ({ movieId }: { movieId: number }) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center text-lg text-gray-700">
+        Loading...
+      </div>
+    );
   }
 
   if (!movie) {
-    return <div>Movie not found.</div>; // Handle case where movie is not found
+    return (
+      <div className="flex items-center justify-center text-lg text-gray-700">
+        Movie not found.
+      </div>
+    );
   }
 
-  console.log('movie', movie);
+  console.log("movie", movie);
 
   return (
     <Layout onAddMovie={handleAddMovie} onAddReview={handleAddReview}>
       {movie && (
         <div className="container mx-auto px-4">
-          <div className=" flex justify-between">
-            <h1 className="text-3xl font-bold mb-4">
+          <div className=" flex justify-between mb-4">
+            <h1 className="text-3xl font-bold  text-gray-600">
               {movie.name || "Undefined"}
             </h1>
-            <p className="text-xl font-semibold mb-4">
-              {movie.averageRating?.toFixed(2) || "N/A"}
+            <p className="text-3xl font-bold text-purple-700">
+              {movie.averageRating
+                ? movie.averageRating.toFixed(2) + "/10"
+                : "N/A"}
             </p>
           </div>
 
-          <ReviewList reviews={reviews} onDeleteReview={handleDeleteReview} />
+          <ReviewList
+            reviews={reviews}
+            onDeleteReview={handleDeleteReview}
+            onUpdateReview={handleUpdateReview}
+          />
         </div>
       )}
       {isAddReviewModalOpen && (
         <AddReviewModal
           onClose={() => setIsAddReviewModalOpen(false)}
+          reviewToEdit={reviewToEdit}
           onReviewAdded={() => {
             fetchReviews();
             fetchMovie(); // Refetch movie to update average rating

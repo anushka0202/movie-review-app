@@ -1,21 +1,50 @@
-import React, { useState } from "react";
-import { addMovie } from "../../lib/api";
+import React, { useState, useEffect } from "react";
+import { addMovie, updateMovie } from "../../lib/api";
+import { Movie } from "../types";
 
 interface AddMovieModalProps {
   onClose: () => void;
   onMovieAdded: () => void;
+  movieToEdit?: Movie | null; 
 }
 
 const AddMovieModal: React.FC<AddMovieModalProps> = ({
   onClose,
   onMovieAdded,
+  movieToEdit,
 }) => {
+  // State for movie name and release date
   const [name, setName] = useState("");
   const [releaseDate, setReleaseDate] = useState("");
 
+  useEffect(() => {
+    if (movieToEdit) {
+      // If editing, pre-fill the form with the movie's details
+      setName(movieToEdit.name);
+      setReleaseDate(
+        new Date(movieToEdit.releaseDate).toISOString().substr(0, 10)
+      );
+    } else {
+      // If adding a new movie, clear the form
+      setName("");
+      setReleaseDate("");
+    }
+  }, [movieToEdit]);
+
+  // Check if we're in edit mode
+  const isEditMode = !!movieToEdit;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await addMovie({ name, releaseDate });
+
+    if (isEditMode && movieToEdit) {
+      // Update the existing movie
+      await updateMovie(movieToEdit.id, { name, releaseDate });
+    } else {
+      // Add a new movie
+      await addMovie({ name, releaseDate });
+    }
+
     onMovieAdded();
     onClose();
   };
@@ -23,7 +52,9 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">Add new movie</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          {isEditMode ? "Edit movie" : "Add new movie"}
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
@@ -69,7 +100,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
             >
-              Create movie
+              {isEditMode ? "Update movie" : "Create movie"}
             </button>
           </div>
         </form>

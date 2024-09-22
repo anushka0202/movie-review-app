@@ -1,4 +1,3 @@
-// app/api/movies/route.ts
 import { prisma } from "../../../lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -34,7 +33,7 @@ export async function PUT(req: Request) {
 
   // Update the movie using Prisma
   const updatedMovie = await prisma.movie.update({
-    where: { id: Number(id) }, // Ensure the id is a number
+    where: { id: Number(id) }, 
     data: {
       name,
       releaseDate: releaseDate ? new Date(releaseDate) : undefined,
