@@ -46,8 +46,12 @@ const MoviePage = ({ movieId }: { movieId: number }) => {
   };
 
   const fetchMovies = async () => {
-    const fetchedMovies = await getMovies();
-    setMovies(fetchedMovies);
+    try {
+      const fetchedMovies = await getMovies();
+      setMovies(fetchedMovies);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+    }
   };
 
   const handleDeleteReview = async (reviewId: number) => {
@@ -57,6 +61,7 @@ const MoviePage = ({ movieId }: { movieId: number }) => {
       window.location.reload();
     } catch (error) {
       console.error("Error deleting review:", error);
+      alert("Something went wrong. Please try again.");
     }
   };
 
@@ -78,21 +83,19 @@ const MoviePage = ({ movieId }: { movieId: number }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center text-lg text-gray-700">
-        Loading...
+      <div className="flex items-center justify-center text-3xl text-gray-700 h-screen">
+        Loading Movie...
       </div>
     );
   }
 
   if (!movie) {
     return (
-      <div className="flex items-center justify-center text-lg text-gray-700">
+      <div className="flex items-center justify-center text-3xl text-gray-700 h-screen">
         Movie not found.
       </div>
     );
   }
-
-  console.log("movie", movie);
 
   return (
     <Layout onAddMovie={handleAddMovie} onAddReview={handleAddReview}>

@@ -12,6 +12,15 @@ const ReviewList: React.FC<ReviewListProps> = ({
   onDeleteReview,
   onUpdateReview,
 }) => {
+  
+  if (reviews.length == 0) {
+    return (
+      <div className="flex items-center justify-center text-3xl text-gray-700 h-[50vh]">
+        No reviews yet.
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       {reviews.map((review) => (

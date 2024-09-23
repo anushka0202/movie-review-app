@@ -2,7 +2,7 @@ import { prisma } from "../../../lib/prisma";
 import { NextResponse } from "next/server";
 
 // Function to calculate the average rating for a given movieId
-async function updateAverageRating(movieId: any) {
+export async function updateAverageRating(movieId: any) {
   const allReviews = await prisma.review.findMany({
     where: { movieId: Number(movieId) },
   });

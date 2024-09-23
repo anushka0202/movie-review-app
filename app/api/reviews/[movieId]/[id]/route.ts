@@ -11,5 +11,5 @@ export async function GET(
   const review = await prisma.review.findMany({
     where: { id: Number(id) },
   });
-  return NextResponse.json(review);
+  return NextResponse.json(review[0]);
 }

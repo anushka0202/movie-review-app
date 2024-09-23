@@ -6,14 +6,14 @@ interface AddReviewModalProps {
   onClose: () => void;
   onReviewAdded: () => void;
   movies: Movie[];
-  reviewToEdit?: Review | null; 
+  reviewToEdit?: Review | null;
 }
 
 const AddReviewModal: React.FC<AddReviewModalProps> = ({
   onClose,
   onReviewAdded,
   movies,
-  reviewToEdit, 
+  reviewToEdit,
 }) => {
   const [selectedMovie, setSelectedMovie] = useState("");
   const [reviewer, setReviewer] = useState("");
@@ -44,16 +44,23 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
       comment,
     };
 
-    if (reviewToEdit) {
-      // Update existing review
-      await updateReview(reviewToEdit.id, reviewData);
-    } else {
-      // Add a new review
-      await addReview(reviewData);
-    }
+    try {
+      if (reviewToEdit) {
+        // Update the existing review
+        await updateReview(reviewToEdit.id, reviewData);
+        alert("Review updated successfully!");
+      } else {
+        // Add a new review
+        await addReview(reviewData);
+        alert("Review added successfully!");
+      }
 
-    onReviewAdded();
-    onClose();
+      onReviewAdded();
+      onClose();
+    } catch (error) {
+      console.error("Error occurred:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
 
   return (

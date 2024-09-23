@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
   const movies = await prisma.movie.findMany({
     include: { reviews: true },
+    orderBy: { name: "asc" },
   });
   return NextResponse.json(movies);
 }

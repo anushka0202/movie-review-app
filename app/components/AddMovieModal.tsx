@@ -5,7 +5,7 @@ import { Movie } from "../types";
 interface AddMovieModalProps {
   onClose: () => void;
   onMovieAdded: () => void;
-  movieToEdit?: Movie | null; 
+  movieToEdit?: Movie | null;
 }
 
 const AddMovieModal: React.FC<AddMovieModalProps> = ({
@@ -37,16 +37,23 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isEditMode && movieToEdit) {
-      // Update the existing movie
-      await updateMovie(movieToEdit.id, { name, releaseDate });
-    } else {
-      // Add a new movie
-      await addMovie({ name, releaseDate });
-    }
+    try {
+      if (isEditMode && movieToEdit) {
+        // Update the existing movie
+        await updateMovie(movieToEdit.id, { name, releaseDate });
+        alert("Movie updated successfully!");
+      } else {
+        // Add a new movie
+        await addMovie({ name, releaseDate });
+        alert("Movie added successfully!");
+      }
 
-    onMovieAdded();
-    onClose();
+      onMovieAdded();
+      onClose();
+    } catch (error) {
+      console.error("Error occurred:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
 
   return (

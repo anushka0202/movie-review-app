@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Movie } from "./types";
-import { deleteMovie, getMovies, updateMovie } from "../lib/api";
+import { deleteMovie, getMovies } from "../lib/api";
 import Layout from "./components/Layout";
 import MovieList from "./components/MovieList";
 import SearchBar from "./components/SearchBar";
@@ -16,15 +16,22 @@ export default function Home() {
   const [isAddMovieModalOpen, setIsAddMovieModalOpen] = useState(false);
   const [isAddReviewModalOpen, setIsAddReviewModalOpen] = useState(false);
   const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchMovies();
   }, []);
 
   const fetchMovies = async () => {
-    const fetchedMovies = await getMovies();
-    setMovies(fetchedMovies);
-    setFilteredMovies(fetchedMovies);
+    try {
+      const fetchedMovies = await getMovies();
+      setMovies(fetchedMovies);
+      setFilteredMovies(fetchedMovies);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+    } finally {
+      setLoading(false); // Set loading to false after the movies have been fetched
+    }
   };
 
   const handleSearch = (searchTerm: string) => {
@@ -39,26 +46,27 @@ export default function Home() {
   };
 
   const handleDeleteMovie = async (movieId: number) => {
-     try {
-       await deleteMovie(movieId);
-       alert("Movie deleted successfully.");
-       window.location.reload();
-     } catch (error) {
-       console.error("Error deleting movie:", error);
-     };
+    try {
+      await deleteMovie(movieId);
+      alert("Movie deleted successfully.");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting movie:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
 
-   const handleUpdateMovie = (movie: Movie) => {
-     if (movie) {
-       setMovieToEdit(movie); // Set the movie to edit
-       setIsAddMovieModalOpen(true); // Open the modal for editing
-     }
-   };
+  const handleUpdateMovie = (movie: Movie) => {
+    if (movie) {
+      setMovieToEdit(movie); // Set the movie to edit
+      setIsAddMovieModalOpen(true); // Open the modal for editing
+    }
+  };
 
-   const handleAddNewMovie = () => {
-     setMovieToEdit(null); // Ensure no movie is selected (for adding a new movie)
-     setIsAddMovieModalOpen(true); // Open the modal for adding a movie
-   };
+  const handleAddNewMovie = () => {
+    setMovieToEdit(null); // Ensure no movie is selected (for adding a new movie)
+    setIsAddMovieModalOpen(true); // Open the modal for adding a movie
+  };
 
   return (
     <Layout
@@ -75,6 +83,7 @@ export default function Home() {
           onMovieClick={handleMovieClick}
           onDeleteMovie={handleDeleteMovie}
           onUpdateMovie={handleUpdateMovie}
+          loading={loading}
         />
       </div>
       {isAddMovieModalOpen && (
