@@ -13,10 +13,10 @@ const Layout: React.FC<LayoutProps> = ({
 }) => {
   return (
     <div className="min-h-screen bg-white">
-      <header className= "bg-gray-200 shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <header className="bg-gray-200 shadow-sm">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center gap-2">
           <h1 className="text-xl font-semibold text-gray-800">MOVIECRITIC</h1>
-          <div>
+          <div className="flex justify-end items-center">
             <button
               className="bg-white text-purple-700 px-4 py-2 rounded mr-2 border border-gray-400"
               onClick={onAddMovie}
